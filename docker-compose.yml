@@ -6,6 +6,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres:5432/${POSTGRES_DB:-airflow}
     AIRFLOW__CORE__FERNET_KEY: ""
     AIRFLOW__WEBSERVER__SECRET_KEY: "local-development-secret-key"
+    AIRFLOW_ADMIN_USERNAME: ${AIRFLOW_ADMIN_USERNAME:-admin}
+    AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
     _PIP_ADDITIONAL_REQUIREMENTS: "pandas==2.2.3 pyarrow==18.1.0 pandera==0.22.1 psycopg2-binary==2.9.10 requests==2.32.3"
     PIPELINE_DB_HOST: postgres
     PIPELINE_DB_PORT: 5432
@@ -46,7 +48,7 @@ services:
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
-    command: -c "airflow db migrate && (airflow users create --username admin --password admin --firstname Pipeline --lastname Admin --role Admin --email admin@example.com || true)"
+    command: -c 'airflow db migrate && (airflow users create --username "$$AIRFLOW_ADMIN_USERNAME" --password "$$AIRFLOW_ADMIN_PASSWORD" --firstname Pipeline --lastname Admin --role Admin --email admin@example.com || true)'
     volumes:
       - .:/opt/airflow
   airflow-webserver:

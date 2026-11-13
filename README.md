@@ -17,14 +17,14 @@ Orders use DummyJSON cart IDs as a monotonically increasing high-water mark held
 
 ## Start the stack
 
-Requirements: Docker Compose v2. Copy `.env.example` to `.env`, then change the local development passwords before exposing services outside your machine. From the repository root:
+Requirements: Docker Compose v2. Copy `.env.example` to `.env`, then change the local development passwords, including the Airflow admin password, before exposing services outside your machine. From the repository root:
 
 ```bash
 docker compose up airflow-init
 docker compose up -d
 ```
 
-Airflow is at <http://localhost:8080> (`admin` / `admin`). PostgreSQL is published on port `5432`; its application database and user are configured through `.env`. The source URL can be changed with `SOURCE_BASE_URL`, for example to a compatible mock API. Data is persisted in the local `data/` directory and the Compose PostgreSQL volume.
+Airflow is at <http://localhost:8080>; log in with `AIRFLOW_ADMIN_USERNAME` and `AIRFLOW_ADMIN_PASSWORD` from `.env`. PostgreSQL is published on port `5432`; its application database and user are configured through `.env`. The source URL can be changed with `SOURCE_BASE_URL`, for example to a compatible mock API. Data is persisted in the local `data/` directory and the Compose PostgreSQL volume.
 
 ## Run and backfill
 
