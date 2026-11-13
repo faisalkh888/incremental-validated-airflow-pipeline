@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="230" viewBox="0 0 1080 230">
+ <style>text{font-family:Arial,sans-serif;fill:#172033}.box{fill:#f3f7ff;stroke:#3867b7;stroke-width:2}.label{font-size:18px;font-weight:bold}.sub{font-size:13px;fill:#43516a}.arrow{stroke:#52647d;stroke-width:2;fill:none;marker-end:url(#a)}</style>
+ <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#52647d"/></marker></defs>
+ <rect class="box" x="25" y="75" rx="12" width="175" height="80"/><text class="label" x="112" y="106" text-anchor="middle">ensure_db</text><text class="sub" x="112" y="130" text-anchor="middle">create tables</text>
+ <rect class="box" x="245" y="75" rx="12" width="175" height="80"/><text class="label" x="332" y="106" text-anchor="middle">extract</text><text class="sub" x="332" y="130" text-anchor="middle">watermark + snapshot</text>
+ <rect class="box" x="465" y="75" rx="12" width="200" height="80"/><text class="label" x="565" y="106" text-anchor="middle">transform_validate</text><text class="sub" x="565" y="130" text-anchor="middle">silver Parquet + quarantine</text>
+ <rect class="box" x="710" y="75" rx="12" width="175" height="80"/><text class="label" x="797" y="106" text-anchor="middle">load</text><text class="sub" x="797" y="130" text-anchor="middle">upsert + run summary</text>
+ <path class="arrow" d="M200 115 H240"/><path class="arrow" d="M420 115 H460"/><path class="arrow" d="M665 115 H705"/>
+ <text class="sub" x="540" y="200" text-anchor="middle">Daily logical date • 2 retries • 20 minute task timeout • max active runs = 1</text>
+</svg>

@@ -1,0 +1,64 @@
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.10.5-python3.11
+  environment: &airflow-environment
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres:5432/${POSTGRES_DB:-airflow}
+    AIRFLOW__CORE__FERNET_KEY: ""
+    AIRFLOW__WEBSERVER__SECRET_KEY: "local-development-secret-key"
+    _PIP_ADDITIONAL_REQUIREMENTS: "pandas==2.2.3 pyarrow==18.1.0 pandera==0.22.1 psycopg2-binary==2.9.10 requests==2.32.3"
+    PIPELINE_DB_HOST: postgres
+    PIPELINE_DB_PORT: 5432
+    PIPELINE_DB_NAME: ${PIPELINE_DB_NAME:-retail}
+    PIPELINE_DB_USER: ${PIPELINE_DB_USER:-retail}
+    PIPELINE_DB_PASSWORD: ${PIPELINE_DB_PASSWORD:-retail}
+    SOURCE_BASE_URL: https://dummyjson.com
+    PYTHONPATH: /opt/airflow
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./retail_pipeline:/opt/airflow/retail_pipeline
+    - ./data:/opt/airflow/data
+    - ./tests:/opt/airflow/tests
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+      PIPELINE_DB_NAME: ${PIPELINE_DB_NAME:-retail}
+      PIPELINE_DB_USER: ${PIPELINE_DB_USER:-retail}
+      PIPELINE_DB_PASSWORD: ${PIPELINE_DB_PASSWORD:-retail}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+      - ./sql/init.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command: -c "airflow db migrate && (airflow users create --username admin --password admin --firstname Pipeline --lastname Admin --role Admin --email admin@example.com || true)"
+    volumes:
+      - .:/opt/airflow
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: unless-stopped
+volumes:
+  postgres-db-volume:
+
