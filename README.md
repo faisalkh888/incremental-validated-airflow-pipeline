@@ -42,7 +42,7 @@ docker compose exec airflow-scheduler airflow dags backfill retail_incremental_v
 
 Compare counts before and after:
 
-```bash
+```powershell
 docker compose exec postgres psql -U retail -d retail -c "SELECT 'core_orders' AS table_name, count(*) FROM core_orders UNION ALL SELECT 'core_customers', count(*) FROM core_customers UNION ALL SELECT 'quarantine', count(*) FROM quarantine;"
 ```
 
@@ -60,12 +60,10 @@ Each backfill logical date is present in `pipeline_runs`. The following is the c
 
 Table counts before and after the January 3 rerun were unchanged: `stg_orders=208`, `core_orders=208`, `stg_customers=208`, `core_customers=208`, and `quarantine=0`. The rerun refreshed the January 3 `pipeline_runs` row. Exact counts can vary with the public source snapshot.
 
-To inspect the full run output, including recorded durations, use:
+Run SQL through PostgreSQL in the container; do not paste SQL directly at the PowerShell prompt. To inspect the full run output, including recorded durations, run:
 
-```sql
-SELECT run_date, orders_extracted, customers_extracted, orders_loaded,
-       customers_loaded, rows_quarantined, duration_seconds, status
-FROM pipeline_runs ORDER BY run_date;
+```powershell
+docker compose exec -T postgres psql -U retail -d retail -c "SELECT run_date, orders_extracted, customers_extracted, orders_loaded, customers_loaded, rows_quarantined, duration_seconds, status FROM pipeline_runs ORDER BY run_date;"
 ```
 
 ## Tables and checks
@@ -90,12 +88,17 @@ Open <http://localhost:8050>. The page refreshes every 30 seconds and shows core
 
 ## Local tests
 
-```bash
+```powershell
 python -m venv .venv
-# Windows PowerShell: .venv\Scripts\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-pytest -q
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+On macOS/Linux, activate the environment with `source .venv/bin/activate`, then run:
+
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
 ```
 
 Tests cover type conversion, deduplication, flattening, schema coverage, valid records, and invalid email/value/null fixtures. The unit tests do not require Docker or a database.
