@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Retail Pipeline · Operations</title>
+  <style>
+    :root{--ink:#17202f;--muted:#798396;--line:#e8ecf2;--paper:#fff;--bg:#f5f7fb;--navy:#14243b;--blue:#5378e8;--green:#138a68;--red:#cf535c;--amber:#d18a2f;--shadow:0 8px 28px rgba(30,45,75,.055)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}
+    .shell{min-height:100vh;display:grid;grid-template-columns:238px 1fr}.sidebar{background:var(--navy);color:#d6dfed;padding:24px 16px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:11px;padding:2px 9px 30px;color:#fff;font-weight:700;font-size:15px;letter-spacing:.01em}.mark{width:31px;height:31px;border-radius:10px;background:linear-gradient(145deg,#77a0ff,#4668dc);display:grid;place-items:center;color:#fff;font-size:16px}.section-label{font-size:10px;color:#8190a9;text-transform:uppercase;letter-spacing:.13em;padding:0 12px 9px}.nav{height:40px;border-radius:8px;display:flex;align-items:center;gap:11px;padding:0 12px;color:#b3bfd1}.nav.active{background:#253955;color:#fff}.nav-icon{width:18px;text-align:center;font-size:15px}.side-foot{margin-top:auto;border-top:1px solid #34445b;padding:17px 9px 2px;color:#9eabc0;font-size:11px}.side-foot b{display:block;color:#d7e0ed;font-size:12px;margin-bottom:4px}
+    main{min-width:0;padding:28px clamp(20px,4vw,56px) 42px}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:25px}.crumb{color:var(--muted);font-size:12px}.crumb strong{color:#38445a;font-weight:600}.top-actions{display:flex;align-items:center;gap:13px}.updated{font-size:11px;color:var(--muted)}.refresh{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;color:#34415a;cursor:pointer;box-shadow:0 2px 4px #24314b08}.refresh:hover{border-color:#cbd4e4}.refresh span{display:inline-block;margin-right:5px;font-size:15px;vertical-align:-1px}
+    .heading{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:21px}.heading h1{font-size:25px;line-height:1.2;letter-spacing:-.035em;margin:0 0 6px}.heading p{color:var(--muted);margin:0;font-size:13px}.range{color:#687489;background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:11px}
+    .alert{display:none;border-radius:9px;padding:11px 14px;margin-bottom:16px;font-size:12px}.alert.show{display:block}.alert.error{background:#fff1f1;color:#a23d46;border:1px solid #f3d4d6}.alert.wait{background:#fff8ea;color:#92601d;border:1px solid #f1e0bb}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{background:var(--paper);border:1px solid #edf0f5;border-radius:11px;box-shadow:var(--shadow)}.metric{padding:17px 18px 16px;min-height:126px}.metric-top{display:flex;justify-content:space-between;align-items:center;color:#798396;font-size:11px;font-weight:600}.metric-icon{height:29px;width:29px;border-radius:8px;display:grid;place-items:center;font-size:15px;background:#edf2ff;color:#5676da}.metric-icon.green{background:#e8f7f1;color:#168462}.metric-icon.orange{background:#fff4e6;color:#c7822c}.metric-icon.red{background:#fff0f0;color:#cb5b62}.metric-number{font-weight:700;font-size:27px;letter-spacing:-.04em;margin:10px 0 1px}.metric-note{font-size:10px;color:#9aa3b1}.metric-note strong{color:#657187;font-weight:600}
+    .lower{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(260px,.85fr);gap:14px;margin-top:15px}.panel{padding:17px 18px}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.panel-title{font-weight:650;font-size:13px}.panel-sub{font-size:10px;color:#98a1ae;margin-top:2px}.tag{font-size:10px;color:#607089;background:#f3f5f9;padding:4px 8px;border-radius:20px}.chart-wrap{height:183px;position:relative}.chart-wrap svg{width:100%;height:100%;overflow:visible}.gridline{stroke:#edf0f5;stroke-width:1}.chart-label{fill:#929baa;font-size:9px}.chart-area{fill:url(#fill)}.chart-line{fill:none;stroke:#607fe8;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}.chart-dot{fill:#fff;stroke:#607fe8;stroke-width:2}.chart-empty{position:absolute;inset:25px 0;display:grid;place-items:center;color:#a4adba;font-size:12px}
+    .health{display:flex;align-items:center;gap:8px;font-size:11px;color:#57657b}.dot{width:8px;height:8px;border-radius:99px;background:#14a477;box-shadow:0 0 0 3px #e3f5ee}.health.down .dot{background:var(--red);box-shadow:0 0 0 3px #fde9ea}.checks{display:grid;gap:0}.check-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f0f2f6;font-size:11px}.check-row:last-child{border-bottom:0}.check-label{display:flex;align-items:center;gap:8px;color:#58657a}.check-symbol{width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#edf7f3;color:#198564;font-size:11px}.check-value{font-weight:650;color:#333f54}.status-msg{border-top:1px solid #eff1f5;margin-top:10px;padding-top:12px;color:#8994a5;font-size:10px}
+    .table-panel{margin-top:15px;overflow:hidden}.table-head{padding:16px 18px 10px;display:flex;justify-content:space-between;align-items:center}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;color:#98a1af;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.08em;padding:9px 14px;border-top:1px solid #f0f2f6;border-bottom:1px solid #f0f2f6}td{padding:11px 14px;border-bottom:1px solid #f3f4f7;font-size:11px;color:#4b586c}tbody tr:last-child td{border-bottom:0}.run-date{font-weight:650;color:#2c3a50}.badge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 8px;font-size:9px;font-weight:650}.badge.success{background:#eaf7f2;color:#168261}.badge.failed{background:#fff0f0;color:#bd4d55}.badge .dot{width:5px;height:5px;box-shadow:none;background:currentColor}.empty{text-align:center;color:#9ba4b2;padding:28px!important}.footer{margin-top:15px;text-align:right;color:#a0a8b5;font-size:10px}
+    @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lower{grid-template-columns:1fr}}@media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{display:none}main{padding:19px 14px 30px}.topline{margin-bottom:19px}.heading{align-items:flex-start;gap:12px}.heading h1{font-size:22px}.range{white-space:nowrap}.grid{gap:9px}.metric{padding:13px;min-height:112px}.metric-number{font-size:24px}.metric-note{font-size:9px}.lower{gap:10px;margin-top:10px}.panel{padding:14px}.table-panel{margin-top:10px}.table-head{padding:14px}.top-actions{gap:7px}.updated{display:none}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">↗</span> Retail Data Ops</div>
+      <div class="section-label">Workspace</div>
+      <div class="nav active"><span class="nav-icon">▦</span> Pipeline overview</div>
+      <div class="nav"><span class="nav-icon">◷</span> Daily runs</div>
+      <div class="nav"><span class="nav-icon">◇</span> Data quality</div>
+      <div class="side-foot"><b>Incremental retail pipeline</b>Airflow · PostgreSQL · Pandera</div>
+    </aside>
+    <main>
+      <div class="topline">
+        <div class="crumb">Workspace <span style="padding:0 7px;color:#c1c8d2">/</span><strong>Pipeline overview</strong></div>
+        <div class="top-actions"><span class="updated" id="updated">Connecting…</span><button class="refresh" id="refresh"><span>↻</span>Refresh</button></div>
+      </div>
+      <div class="heading"><div><h1>Pipeline overview</h1><p>Daily retail data · incremental orders and full customer snapshots</p></div><div class="range">Last 30 runs <span style="padding-left:6px">⌄</span></div></div>
+      <div id="alert" class="alert"></div>
+      <section class="grid" aria-label="Pipeline metrics">
+        <article class="card metric"><div class="metric-top">Orders in core <span class="metric-icon">▤</span></div><div class="metric-number" id="orders">—</div><div class="metric-note">Current reporting table</div></article>
+        <article class="card metric"><div class="metric-top">Customers in core <span class="metric-icon green">♙</span></div><div class="metric-number" id="customers">—</div><div class="metric-note">Latest full snapshot</div></article>
+        <article class="card metric"><div class="metric-top">Quarantined rows <span class="metric-icon orange">⚑</span></div><div class="metric-number" id="quarantined">—</div><div class="metric-note">Failed validation checks</div></article>
+        <article class="card metric"><div class="metric-top">Successful run dates <span class="metric-icon green">✓</span></div><div class="metric-number" id="run-count">—</div><div class="metric-note">Recorded in pipeline_runs</div></article>
+      </section>
+      <section class="lower">
+        <article class="card panel">
+          <div class="panel-head"><div><div class="panel-title">Daily rows loaded</div><div class="panel-sub">Orders and customers by logical run date</div></div><span class="tag">Loaded rows</span></div>
+          <div class="chart-wrap"><svg id="chart" viewBox="0 0 700 183" role="img" aria-label="Rows loaded by day"><defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6e8bed" stop-opacity=".21"/><stop offset="1" stop-color="#6e8bed" stop-opacity="0"/></linearGradient></defs><g id="chart-grid"></g><path id="chart-area" class="chart-area"></path><path id="chart-line" class="chart-line"></path><g id="chart-points"></g><g id="chart-labels"></g></svg><div class="chart-empty" id="chart-empty">No pipeline runs yet</div></div>
+        </article>
+        <article class="card panel">
+          <div class="panel-head"><div><div class="panel-title">Data tables</div><div class="panel-sub">PostgreSQL row counts</div></div><span class="health" id="health"><i class="dot"></i><span>Connected</span></span></div>
+          <div class="checks">
+            <div class="check-row"><span class="check-label"><i class="check-symbol">↗</i> Staging orders</span><span class="check-value" id="stg-orders">—</span></div>
+            <div class="check-row"><span class="check-label"><i class="check-symbol">↗</i> Staging customers</span><span class="check-value" id="stg-customers">—</span></div>
+            <div class="check-row"><span class="check-label"><i class="check-symbol">●</i> Core orders</span><span class="check-value" id="core-orders">—</span></div>
+            <div class="check-row"><span class="check-label"><i class="check-symbol">●</i> Core customers</span><span class="check-value" id="core-customers">—</span></div>
+            <div class="check-row"><span class="check-label"><i class="check-symbol">✓</i> Quarantine</span><span class="check-value" id="quarantine-count">—</span></div>
+          </div>
+          <div class="status-msg" id="schema-note">Counts refresh automatically every 30 seconds.</div>
+        </article>
+      </section>
+      <section class="card table-panel">
+        <div class="table-head"><div><div class="panel-title">Recent pipeline runs</div><div class="panel-sub">Logical date summaries from pipeline_runs</div></div><span class="tag" id="run-tag">0 records</span></div>
+        <div class="table-scroll"><table><thead><tr><th>Run date</th><th>Orders extracted</th><th>Customers extracted</th><th>Orders loaded</th><th>Customers loaded</th><th>Quarantined</th><th>Duration</th><th>Status</th></tr></thead><tbody id="runs"><tr><td class="empty" colspan="8">Loading run history…</td></tr></tbody></table></div>
+      </section>
+      <div class="footer">Retail incremental pipeline · Data refreshes every 30 seconds</div>
+    </main>
+  </div>
+<script>
+  const number = n => Number(n || 0).toLocaleString();
+  const el = id => document.getElementById(id);
+  function renderChart(runs) {
+    const data = [...runs].reverse().slice(-14);
+    el('chart-empty').style.display = data.length ? 'none' : 'grid';
+    const grid = el('chart-grid'), labels = el('chart-labels'), points = el('chart-points');
+    grid.innerHTML = ''; labels.innerHTML = ''; points.innerHTML = '';
+    if (!data.length) { el('chart-line').setAttribute('d',''); el('chart-area').setAttribute('d',''); return; }
+    const w=700,h=183,left=38,right=10,top=12,bottom=28,innerW=w-left-right,innerH=h-top-bottom;
+    const max=Math.max(1,...data.map(r => Number(r.orders_loaded||0)+Number(r.customers_loaded||0)));
+    for(let i=0;i<4;i++){const y=top+innerH*i/3;grid.insertAdjacentHTML('beforeend',`<line class="gridline" x1="${left}" y1="${y}" x2="${w-right}" y2="${y}"/><text class="chart-label" x="${left-8}" y="${y+3}" text-anchor="end">${number(Math.round(max*(3-i)/3))}</text>`)}
+    const coords=data.map((r,i)=>({x:left+(data.length===1?innerW/2:innerW*i/(data.length-1)),y:top+innerH*(1-(Number(r.orders_loaded||0)+Number(r.customers_loaded||0))/max),date:String(r.run_date).slice(5)}));
+    const d=coords.map((p,i)=>`${i?'L':'M'}${p.x},${p.y}`).join(' ');el('chart-line').setAttribute('d',d);el('chart-area').setAttribute('d',`${d} L${coords.at(-1).x},${top+innerH} L${coords[0].x},${top+innerH} Z`);
+    coords.forEach((p,i)=>{points.insertAdjacentHTML('beforeend',`<circle class="chart-dot" cx="${p.x}" cy="${p.y}" r="3.6"><title>${data[i].run_date}: ${number(Number(data[i].orders_loaded||0)+Number(data[i].customers_loaded||0))} rows</title></circle>`);if(i%Math.max(1,Math.ceil(coords.length/7))===0||i===coords.length-1)labels.insertAdjacentHTML('beforeend',`<text class="chart-label" x="${p.x}" y="${h-7}" text-anchor="middle">${p.date}</text>`)});
+  }
+  function renderRuns(runs) {
+    el('run-tag').textContent=`${runs.length} record${runs.length===1?'':'s'}`;
+    if(!runs.length){el('runs').innerHTML='<tr><td class="empty" colspan="8">No run summaries yet. Trigger the Airflow DAG to populate this view.</td></tr>';return}
+    el('runs').innerHTML=runs.map(r=>`<tr><td class="run-date">${String(r.run_date).slice(0,10)}</td><td>${number(r.orders_extracted)}</td><td>${number(r.customers_extracted)}</td><td>${number(r.orders_loaded)}</td><td>${number(r.customers_loaded)}</td><td>${number(r.rows_quarantined)}</td><td>${Number(r.duration_seconds||0).toFixed(1)}s</td><td><span class="badge ${r.status==='success'?'success':'failed'}"><i class="dot"></i>${r.status}</span></td></tr>`).join('');
+  }
+  async function refresh() {
+    const alert=el('alert');
+    try {
+      const response=await fetch('/api/summary',{cache:'no-store'});if(!response.ok)throw new Error('Database unavailable');
+      const data=await response.json();
+      el('health').classList.remove('down');el('health').lastElementChild.textContent='Connected';
+      const c=data.counts||{};
+      el('orders').textContent=number(c.core_orders);el('customers').textContent=number(c.core_customers);el('quarantined').textContent=number(c.quarantine);
+      el('stg-orders').textContent=number(c.stg_orders);el('stg-customers').textContent=number(c.stg_customers);el('core-orders').textContent=number(c.core_orders);el('core-customers').textContent=number(c.core_customers);el('quarantine-count').textContent=number(c.quarantine);
+      const runs=data.runs||[];el('run-count').textContent=number(runs.filter(r=>r.status==='success').length);renderRuns(runs);renderChart(runs);
+      el('schema-note').textContent=data.schema_ready?'Counts refresh automatically every 30 seconds.':'Pipeline tables will appear after the first Airflow run.';
+      alert.className='alert';el('updated').textContent=`Updated ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;
+    } catch(e) {
+      el('health').classList.add('down');el('health').lastElementChild.textContent='Disconnected';alert.className='alert error show';alert.textContent='Could not load PostgreSQL pipeline data. Check that the Compose stack is running.';el('updated').textContent='Connection error';
+    }
+  }
+  el('refresh').addEventListener('click',refresh);refresh();setInterval(refresh,30000);
+</script>
+</body>
+</html>

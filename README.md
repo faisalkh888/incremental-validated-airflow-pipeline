@@ -30,16 +30,14 @@ Airflow is at <http://localhost:8080>; log in with `AIRFLOW_ADMIN_USERNAME` and 
 
 Enable `retail_incremental_validated_pipeline` in the Airflow UI. To run a seven-day backfill, use Airflow's CLI in the scheduler container:
 
-```bash
-docker compose exec airflow-scheduler airflow dags backfill retail_incremental_validated_pipeline \
-  --start-date 2024-01-01 --end-date 2024-01-07
+```powershell
+docker compose exec airflow-scheduler airflow dags backfill retail_incremental_validated_pipeline --start-date 2024-01-01 --end-date 2024-01-07
 ```
 
 Then rerun one logical date to check idempotency:
 
-```bash
-docker compose exec airflow-scheduler airflow dags backfill retail_incremental_validated_pipeline \
-  --start-date 2024-01-03 --end-date 2024-01-03
+```powershell
+docker compose exec airflow-scheduler airflow dags backfill retail_incremental_validated_pipeline --start-date 2024-01-03 --end-date 2024-01-03
 ```
 
 Compare counts before and after:
@@ -80,6 +78,16 @@ FROM pipeline_runs ORDER BY run_date;
 
 Pandera checks cover positive IDs, nonnegative totals/counts, required order date, valid customer email, nonempty identity/contact/location fields, and age range (10+ field checks across both schemas). A row that fails more than one check creates one quarantine record per failed rule.
 
+## Dashboard
+
+The monitoring page reads live row counts and run summaries from the application database. Start it alongside the pipeline stack:
+
+```powershell
+docker compose up -d --build dashboard
+```
+
+Open <http://localhost:8050>. The page refreshes every 30 seconds and shows core/staging/quarantine counts, daily loaded rows, connection state, and the latest 30 `pipeline_runs` records. The dashboard API is read-only; use the Airflow UI at <http://localhost:8080> to trigger or backfill runs.
+
 ## Local tests
 
 ```bash
@@ -97,7 +105,8 @@ Tests cover type conversion, deduplication, flattening, schema coverage, valid r
 ```text
 dags/                 Airflow TaskFlow DAG
 retail_pipeline/      Airflow-independent extraction, transforms, validation, DB loading
-sql/init.sql          Creates the application database and user
+sql/init.sh           Creates the application database and user from environment variables
+dashboard/            Read-only pipeline monitoring page and API
 tests/                pytest unit tests
 data/bronze/          Date-keyed source JSONL (created at runtime)
 data/silver/          Date-keyed typed Parquet (created at runtime)
